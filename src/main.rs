@@ -1,33 +1,31 @@
+use std::collections::HashSet;
+
 use proconio::input;
 
 fn main() {
     input! {
-        n: u64,
+        n: usize,
         k: u64,
         a: [u64; n],
     }
 
-    let mut left = 0;
-    let mut right = 10_u64.pow(9);
+    let mut set: HashSet<(u64, u64)> = HashSet::new();
 
-    while left < right {
-        let medium_second = (left + right) / 2;
-
-        let sum = calc_sum(&a, medium_second);
-
-        if sum >= k {
-            right = medium_second;
-        } else {
-            left = medium_second + 1;
+    for i in 0..n {
+        for j in (i + 1)..n {
+            set.insert((a[i], a[j]));
         }
     }
-    println!("{}", (left + right) / 2);
-}
 
-fn calc_sum(a: &Vec<u64>, second: u64) -> u64 {
-    let mut sum = 0;
-    for i in a {
-        sum += second / *i;
+    let mut counter = 0;
+    for (x, y) in set {
+        if x > y {
+            if ((x - y) as i64).abs() <= k as i64 {
+                counter += 1;
+            }
+        } else if x < y && ((y - x) as i64).abs() <= k as i64 {
+            counter += 1;
+        }
     }
-    sum
+    println!("{}", counter);
 }
